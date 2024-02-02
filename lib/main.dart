@@ -4,6 +4,24 @@ void main() {
   runApp(MyApp());
 }
 
+class Post {
+  String body;
+  String author;
+  int likes = 0;
+  bool userLiked = false;
+
+  Post(this.body, this.author);
+
+  void likePost() {
+    this.userLiked = !this.userLiked;
+    if (this.userLiked) {
+      likes += 1;
+    } else {
+      likes -= 1;
+    }
+  }
+}
+
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
@@ -25,11 +43,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String text = "";
-
+  List<Post> posts = [];
   void changeText(String text) {
+    this.setState(() {});
+  }
+
+  void newPost(String text) {
     this.setState(() {
-      this.text = text;
+      posts.add(new Post(text, "Author"));
     });
   }
 
@@ -41,8 +62,8 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Column(
         children: <Widget>[
-          TextInputWidget(this.changeText),
-          Text(this.text),
+          Expanded(child: PostList(this.posts)),
+          Expanded(child: TextInputWidget(this.newPost)),
         ],
       ),
     );
@@ -85,6 +106,27 @@ class _TextInputWidgetState extends State<TextInputWidget> {
             splashColor: Colors.blue,
             tooltip: "Post message",
           )),
+    );
+  }
+}
+
+class PostList extends StatefulWidget {
+  final List<Post> listItems;
+
+  PostList(this.listItems);
+
+  @override
+  State<PostList> createState() => _PostListState();
+}
+
+class _PostListState extends State<PostList> {
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: this.widget.listItems.length,
+      itemBuilder: (context, index) {
+        var post = this.widget.listItems[index];
+      },
     );
   }
 }
